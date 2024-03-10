@@ -1,26 +1,12 @@
 "use client"
 
 import { ChakraProvider } from "@chakra-ui/react"
-import {
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  SetStateAction,
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  gql,
-} from "@apollo/client"
+import { Dispatch, FC, PropsWithChildren, createContext, useState } from "react"
+import { LOCAL_STORAGE_KEY_GITHUB_TOKEN } from "./dashboard/DashboardProvier"
 
 type GithubContextType = {
   accessToken: string | undefined
-  setAccessToken: Dispatch<SetStateAction<string | undefined>>
+  setAccessToken: Dispatch<string | undefined>
 }
 
 export const GithubContext = createContext<GithubContextType>({
@@ -29,11 +15,25 @@ export const GithubContext = createContext<GithubContextType>({
 })
 
 const GlobalProvier: FC<PropsWithChildren> = ({ children }) => {
-  const [accessToken, setAccessToken] = useState<string>()
+  const [accessToken, setAccessToken] = useState<string | undefined>(
+    window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
+  )
 
   return (
     <ChakraProvider>
-      <GithubContext.Provider value={{ accessToken, setAccessToken }}>
+      <GithubContext.Provider
+        value={{
+          accessToken,
+          setAccessToken: (accessToken: string | undefined) => {
+            if (accessToken) {
+              window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN] = accessToken
+            } else {
+              delete window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
+            }
+            setAccessToken(accessToken)
+          },
+        }}
+      >
         {children}
       </GithubContext.Provider>
     </ChakraProvider>

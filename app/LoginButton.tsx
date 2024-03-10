@@ -1,9 +1,9 @@
 "use client"
 
-import { BoxProps, Button, ButtonProps } from "@chakra-ui/react"
-import React, { forwardRef, useContext, useEffect, useRef } from "react"
+import { Button, ButtonProps } from "@chakra-ui/react"
+import React, { forwardRef, useContext, useEffect } from "react"
 import { GithubContext } from "./GlobalProvier"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const OAUTH_URL =
   "https://github.com/login/oauth/authorize?client_id=4f7dbe0973b61df3ae66&scope=repo user"
@@ -18,7 +18,7 @@ type OauthResult = {
 
 const LoginButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   const router = useRouter()
-  const { setAccessToken } = useContext(GithubContext)
+  const { accessToken, setAccessToken } = useContext(GithubContext)
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent<OauthResult>) => {
@@ -37,7 +37,11 @@ const LoginButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     return () => window.removeEventListener("message", handleMessage)
   }, [])
 
-  return (
+  return accessToken ? (
+    <Button ref={ref} onClick={() => router.push("/dashboard")} {...props}>
+      Go to dashboard
+    </Button>
+  ) : (
     <Button
       ref={ref}
       onClick={() => {

@@ -19,6 +19,8 @@ import { GithubContext } from "../GlobalProvier"
 import { useRouter } from "next/navigation"
 import RepositoryLoader from "./RepositoryLoader"
 
+export const LOCAL_STORAGE_KEY_GITHUB_TOKEN = "GITHUB_TOKEN"
+
 let token: string | undefined
 
 const httpLink = new HttpLink({
@@ -44,7 +46,12 @@ const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
   token = accessToken
 
   useLayoutEffect(() => {
-    if (!accessToken) router.push("/")
+    if (accessToken) {
+      window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN] = accessToken
+    } else {
+      delete window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
+      router.push("/")
+    }
   }, [accessToken])
 
   return (
