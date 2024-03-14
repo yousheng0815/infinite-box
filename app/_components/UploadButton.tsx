@@ -3,8 +3,6 @@
 import { RepoObjectQuery, RepoObjectQueryVariables } from "@/gql/graphql"
 import { useLazyQuery } from "@apollo/client"
 import { Button, Input } from "@chakra-ui/react"
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { FC, useRef } from "react"
 import { useCreateCommitOnBranchMutation } from "../_utils/hooks"
 import { APP_REPO_NAME } from "../_utils/utils"
@@ -12,9 +10,10 @@ import { RepoObject } from "../dashboard/home/[[...slugs]]/page"
 
 interface Props {
   targetDir: string
+  onUpload?: (filename: string, uploadPromise: Promise<void>) => void
 }
 
-const UploadButton: FC<Props> = ({ targetDir }) => {
+const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [createCommitOnBranch] = useCreateCommitOnBranchMutation()
@@ -32,13 +31,8 @@ const UploadButton: FC<Props> = ({ targetDir }) => {
 
   return (
     <>
-      <Button
-        boxSize="3rem"
-        borderRadius="50%"
-        colorScheme="blue"
-        onClick={() => inputRef.current?.click()}
-      >
-        <FontAwesomeIcon icon={faPlus} size="lg" color="white" />
+      <Button colorScheme="blue" onClick={() => inputRef.current?.click()}>
+        Upload
       </Button>
       <Input
         ref={inputRef}
@@ -60,7 +54,18 @@ const UploadButton: FC<Props> = ({ targetDir }) => {
             newFilename += "_copy"
           }
 
-          createCommitOnBranch(
+          let resolveUpload:
+            | ((value: void | PromiseLike<void>) => void)
+            | undefined
+
+          onUpload?.(
+            newFilename,
+            new Promise((res) => {
+              resolveUpload = res
+            })
+          )
+
+          await createCommitOnBranch(
             {
               additions: [
                 {
@@ -73,6 +78,8 @@ const UploadButton: FC<Props> = ({ targetDir }) => {
               refetchQueries: [RepoObject],
             }
           )
+
+          resolveUpload?.()
 
           event.target.value = ""
         }}

@@ -1,16 +1,17 @@
-import { FsItemTreeEntryFragment, RepositoryVisibility } from "@/gql/graphql"
-import { gql, useMutation, useQuery } from "@apollo/client"
-import { Box, Flex, Grid } from "@chakra-ui/react"
-import { FC, MouseEventHandler, useContext, useEffect, useState } from "react"
-import { GithubContext } from "../GlobalProvier"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FsItemTreeEntryFragment } from "@/gql/graphql"
+import { gql } from "@apollo/client"
+import { Box, Flex, FlexProps } from "@chakra-ui/react"
 import { faFile, faFolder } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FC, useEffect, useState } from "react"
 
-interface Props extends FsItemTreeEntryFragment {
+interface Props extends FlexProps {
+  treeEntry?: Partial<FsItemTreeEntryFragment>
   onOpen?: () => void
 }
 
-const FsItem: FC<Props> = ({ name, oid, path, size, object, onOpen }) => {
+const FsItem: FC<Props> = ({ treeEntry, onOpen, ...flexProps }) => {
+  const { name, object } = treeEntry ?? {}
   const type = object?.__typename
 
   const [isSelected, setIsSelected] = useState(false)
@@ -22,9 +23,7 @@ const FsItem: FC<Props> = ({ name, oid, path, size, object, onOpen }) => {
       window.removeEventListener("click", handleClick, { capture: true })
   }, [])
 
-  if (type !== "Blob" && type !== "Tree") return null
-
-  const icon = type === "Blob" ? faFile : faFolder
+  const icon = type === "Tree" ? faFolder : faFile
 
   return (
     <Flex
@@ -38,6 +37,7 @@ const FsItem: FC<Props> = ({ name, oid, path, size, object, onOpen }) => {
       _hover={{ backgroundColor: "gray.50" }}
       onClick={() => setIsSelected(true)}
       onDoubleClick={onOpen}
+      {...flexProps}
     >
       <Box color="gray.700">
         <FontAwesomeIcon icon={icon} size="4x" />

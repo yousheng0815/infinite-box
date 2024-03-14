@@ -50,7 +50,7 @@ export const useCreateCommitOnBranchMutation = () => {
 
     if (!defaultBranchOid) throw new Error("Failed to fetch defaultBranchRef")
 
-    createCommitOnBranch({
+    return createCommitOnBranch({
       variables: {
         input: {
           branch: {

@@ -16,7 +16,9 @@ export const GithubContext = createContext<GithubContextType>({
 
 const GlobalProvier: FC<PropsWithChildren> = ({ children }) => {
   const [accessToken, setAccessToken] = useState<string | undefined>(
-    window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
+    typeof window !== "undefined"
+      ? window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
+      : undefined
   )
 
   return (
