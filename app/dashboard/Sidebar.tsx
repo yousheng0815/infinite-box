@@ -9,7 +9,7 @@ const Sidebar: FC<BoxProps> = (props) => {
         Logo
       </Box>
       <Grid gap="2">
-        <Link href="/dashboard">Home</Link>
+        <Link href="/dashboard/home">Home</Link>
         <Link href="/dashboard/recent">Recent</Link>
         <Link href="/dashboard/shared">Shared</Link>
         <Link href="/dashboard/favorite">Favorite</Link>

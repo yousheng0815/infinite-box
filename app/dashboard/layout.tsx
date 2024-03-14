@@ -15,7 +15,7 @@ const DashboardLayout: FC<PropsWithChildren> = ({ children }) => {
       >
         <Sidebar gridRow="1 / -1" background="gray.100" px="8" py="4" />
         <Topbar px="4" py="4" />
-        <Box pb="4" px="4" overflowY="auto">
+        <Box p="4" overflowY="auto">
           {children}
         </Box>
       </Grid>

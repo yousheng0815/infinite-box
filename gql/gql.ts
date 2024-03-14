@@ -13,8 +13,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n      }\n    }\n  }\n": types.AppRepoDocument,
-    "\n  query AppRepoHeadTree($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: \"HEAD\") {\n          id\n          ... on Commit {\n            tree {\n              id\n              entries {\n                name\n                type\n                oid\n                path\n                size\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n": types.AppRepoHeadTreeDocument,
+    "\n  fragment FsItemTreeEntry on TreeEntry {\n    name\n    oid\n    path\n    size\n    object {\n      id\n      oid\n    }\n  }\n": types.FsItemTreeEntryFragmentDoc,
+    "\n  query DefaultBranchRef($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        defaultBranchRef {\n          id\n          target {\n            __typename\n            id\n            oid\n          }\n        }\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n": types.DefaultBranchRefDocument,
+    "\n  mutation CreateCommitOnBranch($input: CreateCommitOnBranchInput!) {\n    createCommitOnBranch(input: $input) {\n      clientMutationId\n    }\n  }\n": types.CreateCommitOnBranchDocument,
+    "\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        owner {\n          id\n          login\n        }\n      }\n    }\n  }\n": types.AppRepoDocument,
+    "\n  query RepoObject($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n": types.RepoObjectDocument,
 };
 
 /**
@@ -34,11 +37,23 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n      }\n    }\n  }\n"];
+export function gql(source: "\n  fragment FsItemTreeEntry on TreeEntry {\n    name\n    oid\n    path\n    size\n    object {\n      id\n      oid\n    }\n  }\n"): (typeof documents)["\n  fragment FsItemTreeEntry on TreeEntry {\n    name\n    oid\n    path\n    size\n    object {\n      id\n      oid\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query AppRepoHeadTree($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: \"HEAD\") {\n          id\n          ... on Commit {\n            tree {\n              id\n              entries {\n                name\n                type\n                oid\n                path\n                size\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query AppRepoHeadTree($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: \"HEAD\") {\n          id\n          ... on Commit {\n            tree {\n              id\n              entries {\n                name\n                type\n                oid\n                path\n                size\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query DefaultBranchRef($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        defaultBranchRef {\n          id\n          target {\n            __typename\n            id\n            oid\n          }\n        }\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n"): (typeof documents)["\n  query DefaultBranchRef($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        defaultBranchRef {\n          id\n          target {\n            __typename\n            id\n            oid\n          }\n        }\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation CreateCommitOnBranch($input: CreateCommitOnBranchInput!) {\n    createCommitOnBranch(input: $input) {\n      clientMutationId\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCommitOnBranch($input: CreateCommitOnBranchInput!) {\n    createCommitOnBranch(input: $input) {\n      clientMutationId\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        owner {\n          id\n          login\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query AppRepo($name: String!) {\n    viewer {\n      repository(name: $name) {\n        id\n        owner {\n          id\n          login\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query RepoObject($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n"): (typeof documents)["\n  query RepoObject($name: String!, $expression: String) {\n    viewer {\n      repository(name: $name) {\n        id\n        object(expression: $expression) {\n          id\n          ... on Tree {\n            entries {\n              ...FsItemTreeEntry\n            }\n          }\n        }\n      }\n    }\n  }\n  \n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

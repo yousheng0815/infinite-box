@@ -17,7 +17,7 @@ import {
 } from "@apollo/client"
 import { GithubContext } from "../GlobalProvier"
 import { useRouter } from "next/navigation"
-import RepositoryLoader from "./RepositoryLoader"
+import RepositoryProvider from "./RepositoryProvider"
 
 export const LOCAL_STORAGE_KEY_GITHUB_TOKEN = "GITHUB_TOKEN"
 
@@ -46,17 +46,12 @@ const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
   token = accessToken
 
   useLayoutEffect(() => {
-    if (accessToken) {
-      window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN] = accessToken
-    } else {
-      delete window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
-      router.push("/")
-    }
+    if (!accessToken) router.push("/")
   }, [accessToken])
 
   return (
     <ApolloProvider client={client}>
-      <RepositoryLoader>{children}</RepositoryLoader>
+      <RepositoryProvider>{children}</RepositoryProvider>
     </ApolloProvider>
   )
 }

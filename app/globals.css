@@ -1,6 +1,4 @@
 body {
-  overscroll-behavior: none;
-
   --chakra-colors-chakra-body-text: var(--chakra-colors-gray-800);
   --chakra-colors-chakra-body-bg: var(--chakra-colors-white);
   --chakra-colors-chakra-border-color: var(--chakra-colors-gray-200);

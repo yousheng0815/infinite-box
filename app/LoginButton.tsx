@@ -27,7 +27,7 @@ const LoginButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
       const { access_token } = event.data
       if (access_token) {
         setAccessToken(access_token)
-        router.push("/dashboard")
+        router.push("/dashboard/home")
       }
 
       //TODO: Handle Oauth errors

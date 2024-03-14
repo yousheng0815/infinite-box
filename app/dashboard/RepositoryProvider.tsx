@@ -1,13 +1,23 @@
 "use client"
 
 import { Box, Flex, Spinner } from "@chakra-ui/react"
-import { FC, PropsWithChildren, useContext } from "react"
+import { FC, PropsWithChildren, createContext, useContext } from "react"
 import { gql, useQuery } from "@apollo/client"
 import { GithubContext } from "../GlobalProvier"
-import { APP_REPO_NAME, createAppRepo } from "./utils"
+import { APP_REPO_NAME, createAppRepo } from "../_utils/utils"
 import { AppRepoQuery, AppRepoQueryVariables } from "@/gql/graphql"
 
-const RepositoryLoader: FC<PropsWithChildren> = ({ children }) => {
+type RepositoryContextType = {
+  accessToken: string
+  owner: string
+}
+
+export const RepositoryContext = createContext<RepositoryContextType>({
+  accessToken: "",
+  owner: "",
+})
+
+const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
   const { accessToken } = useContext(GithubContext)
 
   const query = useQuery<AppRepoQuery, AppRepoQueryVariables>(AppRepo, {
@@ -27,9 +37,12 @@ const RepositoryLoader: FC<PropsWithChildren> = ({ children }) => {
     },
   })
 
-  const appRepository = query.data?.viewer.repository
-  return appRepository ? (
-    children
+  const owner = query.data?.viewer.repository?.owner.login
+
+  return accessToken && owner ? (
+    <RepositoryContext.Provider value={{ accessToken, owner }}>
+      {children}
+    </RepositoryContext.Provider>
   ) : (
     <Flex
       width="full"
@@ -47,9 +60,13 @@ const AppRepo = gql`
     viewer {
       repository(name: $name) {
         id
+        owner {
+          id
+          login
+        }
       }
     }
   }
 `
 
-export default RepositoryLoader
+export default RepositoryProvider
