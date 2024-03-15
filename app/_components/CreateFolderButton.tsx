@@ -4,8 +4,6 @@ import { useApolloClient } from "@apollo/client"
 import {
   Button,
   FormControl,
-  FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   Modal,
@@ -17,7 +15,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react"
-import { FC, useContext, useRef, useState } from "react"
+import { FC, useContext, useState } from "react"
 import {
   commit,
   getPromiseWithHandlers,
@@ -25,8 +23,7 @@ import {
   getUnusedName,
 } from "../_utils/utils"
 import { RepositoryContext } from "../dashboard/RepositoryProvider"
-import { RepoObject } from "../dashboard/home/[[...slugs]]/page"
-import { isError } from "util"
+import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
 
 interface Props {
   targetDir: string

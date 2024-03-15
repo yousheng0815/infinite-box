@@ -7,7 +7,7 @@ import {
   RepoObjectQueryVariables,
 } from "@/gql/graphql"
 import { ApolloClient, MutationOptions, gql } from "@apollo/client"
-import { RepoObject } from "../dashboard/home/[[...slugs]]/page"
+import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
 
 export const APP_REPO_NAME = ".infinite-box"
 

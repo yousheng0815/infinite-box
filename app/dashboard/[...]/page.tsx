@@ -6,3 +6,5 @@ const DashboardCatchAll: FC = () => {
 }
 
 export default DashboardCatchAll
+
+export const runtime = "edge"

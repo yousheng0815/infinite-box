@@ -11,6 +11,7 @@ import Link from "next/link"
 import { RepositoryContext } from "../../RepositoryProvider"
 import UploadButton from "@/app/_components/UploadButton"
 import CreateFolderButton from "@/app/_components/CreateFolderButton"
+import { RepoObject } from "./graphql"
 
 interface Props {
   params: { slugs?: string[] }
@@ -122,36 +123,6 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
   )
 }
 
-export const FsItemTreeEntry = gql`
-  fragment FsItemTreeEntry on TreeEntry {
-    name
-    oid
-    path
-    size
-    object {
-      id
-      oid
-    }
-  }
-`
-
-export const RepoObject = gql`
-  query RepoObject($name: String!, $expression: String) {
-    viewer {
-      repository(name: $name) {
-        id
-        object(expression: $expression) {
-          id
-          ... on Tree {
-            entries {
-              ...FsItemTreeEntry
-            }
-          }
-        }
-      }
-    }
-  }
-  ${FsItemTreeEntry}
-`
-
 export default Browse
+
+export const runtime = "edge"

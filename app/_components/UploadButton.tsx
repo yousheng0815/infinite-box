@@ -10,7 +10,7 @@ import {
   getUnusedName,
 } from "../_utils/utils"
 import { RepositoryContext } from "../dashboard/RepositoryProvider"
-import { RepoObject } from "../dashboard/home/[[...slugs]]/page"
+import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
 
 interface Props {
   targetDir: string
