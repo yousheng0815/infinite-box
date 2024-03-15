@@ -1,11 +1,15 @@
 "use client"
 
-import { RepoObjectQuery, RepoObjectQueryVariables } from "@/gql/graphql"
-import { useLazyQuery } from "@apollo/client"
+import { useApolloClient } from "@apollo/client"
 import { Button, Input } from "@chakra-ui/react"
-import { FC, useRef } from "react"
-import { useCreateCommitOnBranchMutation } from "../_utils/hooks"
-import { APP_REPO_NAME } from "../_utils/utils"
+import { FC, useContext, useRef, useState } from "react"
+import {
+  commit,
+  getPromiseWithHandlers,
+  getTree,
+  getUnusedName,
+} from "../_utils/utils"
+import { RepositoryContext } from "../dashboard/RepositoryProvider"
 import { RepoObject } from "../dashboard/home/[[...slugs]]/page"
 
 interface Props {
@@ -14,24 +18,21 @@ interface Props {
 }
 
 const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
+  const { owner } = useContext(RepositoryContext)
+
+  const client = useApolloClient()
+
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [createCommitOnBranch] = useCreateCommitOnBranchMutation()
-
-  const [getObject] = useLazyQuery<RepoObjectQuery, RepoObjectQueryVariables>(
-    RepoObject,
-    {
-      variables: {
-        name: APP_REPO_NAME,
-        expression: `HEAD:${targetDir}`,
-      },
-      fetchPolicy: "network-only",
-    }
-  )
+  const [isUploading, setIsUploading] = useState(false)
 
   return (
     <>
-      <Button colorScheme="blue" onClick={() => inputRef.current?.click()}>
+      <Button
+        colorScheme="blue"
+        onClick={() => inputRef.current?.click()}
+        isLoading={isUploading}
+      >
         Upload
       </Button>
       <Input
@@ -42,30 +43,19 @@ const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
           const file = event.target.files?.[0]
           if (!file) return
 
-          const getObjectQuery = await getObject()
-          const object = getObjectQuery.data?.viewer.repository?.object
-          if (object?.__typename !== "Tree") {
-            throw new Error("Failed to fetch target directory info")
-          }
+          setIsUploading(true)
 
-          const existingFilenames = object.entries?.map((entry) => entry.name)
-          let newFilename = file.name
-          while (existingFilenames?.includes(newFilename)) {
-            newFilename += "_copy"
-          }
+          const targetTree = await getTree(client, targetDir)
+          const existingNames = targetTree.map((entry) => entry.name)
+          const newFilename = getUnusedName(file.name, existingNames)
 
-          let resolveUpload:
-            | ((value: void | PromiseLike<void>) => void)
-            | undefined
+          const { promise, resolve } = getPromiseWithHandlers<void>()
 
-          onUpload?.(
-            newFilename,
-            new Promise((res) => {
-              resolveUpload = res
-            })
-          )
+          onUpload?.(newFilename, promise)
 
-          await createCommitOnBranch(
+          await commit(
+            client,
+            owner,
             {
               additions: [
                 {
@@ -79,7 +69,9 @@ const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
             }
           )
 
-          resolveUpload?.()
+          resolve?.()
+
+          setIsUploading(false)
 
           event.target.value = ""
         }}

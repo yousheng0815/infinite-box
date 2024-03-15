@@ -1,6 +1,6 @@
 "use client"
 
-import FsItem, { FsItemTreeEntry } from "@/app/_components/FileSystemItem"
+import FsItem from "@/app/_components/FileSystemItem"
 import { gql, useQuery } from "@apollo/client"
 import { Box, Button, Flex, Grid, Spinner } from "@chakra-ui/react"
 import { FC, Fragment, useContext, useState } from "react"
@@ -71,7 +71,7 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
         <Spinner />
       ) : object?.__typename === "Tree" ? (
         <>
-          <Flex flexWrap="wrap" gap="2">
+          <Flex flexWrap="wrap">
             {object.entries
               ?.filter((entry) => !entry.name.startsWith("."))
               .map((entry) => {
@@ -123,6 +123,19 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
     </Grid>
   )
 }
+
+export const FsItemTreeEntry = gql`
+  fragment FsItemTreeEntry on TreeEntry {
+    name
+    oid
+    path
+    size
+    object {
+      id
+      oid
+    }
+  }
+`
 
 export const RepoObject = gql`
   query RepoObject($name: String!, $expression: String) {

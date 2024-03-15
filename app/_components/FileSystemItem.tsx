@@ -1,5 +1,4 @@
 import { FsItemTreeEntryFragment } from "@/gql/graphql"
-import { gql } from "@apollo/client"
 import { Box, Flex, FlexProps } from "@chakra-ui/react"
 import { faFile, faFolder } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -27,11 +26,12 @@ const FsItem: FC<Props> = ({ treeEntry, onOpen, ...flexProps }) => {
 
   return (
     <Flex
-      boxSize="8rem"
+      boxSize="9rem"
       direction="column"
       alignItems="center"
       gap="1"
-      pt="4"
+      pt="6"
+      px="2"
       border="1px"
       borderColor={isSelected ? "gray.200" : "transparent"}
       _hover={{ backgroundColor: "gray.50" }}
@@ -53,18 +53,5 @@ const FsItem: FC<Props> = ({ treeEntry, onOpen, ...flexProps }) => {
     </Flex>
   )
 }
-
-export const FsItemTreeEntry = gql`
-  fragment FsItemTreeEntry on TreeEntry {
-    name
-    oid
-    path
-    size
-    object {
-      id
-      oid
-    }
-  }
-`
 
 export default FsItem
