@@ -35,7 +35,7 @@ const LoginButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     window.addEventListener("message", handleMessage)
 
     return () => window.removeEventListener("message", handleMessage)
-  }, [])
+  }, [router, setAccessToken])
 
   return accessToken ? (
     <Button ref={ref} onClick={() => router.push("/dashboard")} {...props}>

@@ -47,7 +47,7 @@ const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
 
   useLayoutEffect(() => {
     if (!accessToken) router.push("/")
-  }, [accessToken])
+  }, [accessToken, router])
 
   return (
     <ApolloProvider client={client}>

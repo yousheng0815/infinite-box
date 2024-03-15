@@ -30,7 +30,7 @@ const FsItem: FC<Props> = ({ treeEntry, onOpen, ...flexProps }) => {
       direction="column"
       alignItems="center"
       gap="1"
-      pt="6"
+      pt="7"
       px="2"
       border="1px"
       borderColor={isSelected ? "gray.200" : "transparent"}

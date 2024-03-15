@@ -29,7 +29,7 @@ const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
   return (
     <>
       <Button
-        colorScheme="blue"
+        colorScheme="green"
         onClick={() => inputRef.current?.click()}
         isLoading={isUploading}
       >

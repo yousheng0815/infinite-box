@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { RepositoryContext } from "../../RepositoryProvider"
 import UploadButton from "@/app/_components/UploadButton"
+import CreateFolderButton from "@/app/_components/CreateFolderButton"
 
 interface Props {
   params: { slugs?: string[] }
@@ -45,7 +46,7 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
 
   return (
     <Grid gap="4">
-      <Grid templateColumns="1fr auto">
+      <Grid templateColumns="1fr auto auto" gap="4">
         <Flex gap="1">
           {navSlugs.map((slug, i, array) => (
             <Fragment key={i}>
@@ -56,6 +57,7 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
             </Fragment>
           ))}
         </Flex>
+        <CreateFolderButton targetDir={path} />
         <UploadButton
           targetDir={path}
           onUpload={async (filename, uploadPromise) => {
@@ -97,12 +99,8 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
                 )
               })}
             {uploadingFiles.map((uploadingFile) => (
-              <Box position="relative">
-                <FsItem
-                  key={uploadingFile}
-                  treeEntry={{ name: uploadingFile }}
-                  opacity={0.6}
-                />
+              <Box key={uploadingFile} position="relative">
+                <FsItem treeEntry={{ name: uploadingFile }} opacity={0.6} />
                 <Flex
                   position="absolute"
                   inset="0 0 0 0"
