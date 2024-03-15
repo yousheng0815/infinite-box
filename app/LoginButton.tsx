@@ -5,8 +5,7 @@ import React, { forwardRef, useContext, useEffect } from "react"
 import { GithubContext } from "./GlobalProvier"
 import { useRouter } from "next/navigation"
 
-const OAUTH_URL =
-  "https://github.com/login/oauth/authorize?client_id=4f7dbe0973b61df3ae66&scope=repo user"
+const OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_OAUTH_CLIENT_ID}&scope=repo user`
 
 type OauthResult = {
   access_token?: string
