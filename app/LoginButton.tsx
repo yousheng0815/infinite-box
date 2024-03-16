@@ -37,7 +37,7 @@ const LoginButton = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
   }, [router, setAccessToken])
 
   return accessToken ? (
-    <Button ref={ref} onClick={() => router.push("/dashboard")} {...props}>
+    <Button ref={ref} onClick={() => router.push("/dashboard/home")} {...props}>
       Go to dashboard
     </Button>
   ) : (

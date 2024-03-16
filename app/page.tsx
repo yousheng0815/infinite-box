@@ -1,12 +1,10 @@
-import { Button } from "@chakra-ui/react"
-import Link from "next/link"
-import { useEffect } from "react"
+import { Flex } from "@chakra-ui/react"
 import LoginButton from "./LoginButton"
 
 export default function Home() {
   return (
-    <main>
+    <Flex inset="0" alignItems="center" justifyContent="center" h="100dvh">
       <LoginButton />
-    </main>
+    </Flex>
   )
 }

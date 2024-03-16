@@ -1,7 +1,15 @@
 "use client"
 
 import { ChakraProvider } from "@chakra-ui/react"
-import { Dispatch, FC, PropsWithChildren, createContext, useState } from "react"
+import {
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  createContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react"
 import { LOCAL_STORAGE_KEY_GITHUB_TOKEN } from "./dashboard/DashboardProvier"
 
 type GithubContextType = {
@@ -15,11 +23,11 @@ export const GithubContext = createContext<GithubContextType>({
 })
 
 const GlobalProvier: FC<PropsWithChildren> = ({ children }) => {
-  const [accessToken, setAccessToken] = useState<string | undefined>(
-    typeof window !== "undefined"
-      ? window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN]
-      : undefined
-  )
+  const [accessToken, setAccessToken] = useState<string>()
+
+  useLayoutEffect(() => {
+    setAccessToken(window.localStorage[LOCAL_STORAGE_KEY_GITHUB_TOKEN])
+  }, [])
 
   return (
     <ChakraProvider>
