@@ -1,6 +1,7 @@
+import { graphql } from "@/gql/gql"
 import { gql } from "@apollo/client"
 
-export const FsItemTreeEntry = gql`
+export const FsItemTreeEntry = graphql(`
   fragment FsItemTreeEntry on TreeEntry {
     name
     oid
@@ -11,9 +12,9 @@ export const FsItemTreeEntry = gql`
       oid
     }
   }
-`
+`)
 
-export const RepoObject = gql`
+export const RepoObject = graphql(`
   query RepoObject($name: String!, $expression: String) {
     viewer {
       repository(name: $name) {
@@ -29,5 +30,4 @@ export const RepoObject = gql`
       }
     }
   }
-  ${FsItemTreeEntry}
-`
+`)

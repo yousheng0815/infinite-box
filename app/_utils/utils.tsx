@@ -8,6 +8,7 @@ import {
 } from "@/gql/graphql"
 import { ApolloClient, MutationOptions, gql } from "@apollo/client"
 import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
+import { graphql } from "@/gql/gql"
 
 export const APP_REPO_NAME = ".infinite-box"
 
@@ -193,7 +194,7 @@ export const commit = async <T,>(
   })
 }
 
-const DefaultBranchRef = gql`
+const DefaultBranchRef = graphql(`
   query DefaultBranchRef($name: String!) {
     viewer {
       repository(name: $name) {
@@ -209,12 +210,12 @@ const DefaultBranchRef = gql`
       }
     }
   }
-`
+`)
 
-const CreateCommitOnBranch = gql`
+const CreateCommitOnBranch = graphql(`
   mutation CreateCommitOnBranch($input: CreateCommitOnBranchInput!) {
     createCommitOnBranch(input: $input) {
       clientMutationId
     }
   }
-`
+`)

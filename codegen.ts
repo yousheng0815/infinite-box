@@ -20,7 +20,6 @@ const config: CodegenConfig = {
     "./gql/": {
       preset: "client",
       presetConfig: {
-        gqlTagName: "gql",
         fragmentMasking: false,
       },
     },

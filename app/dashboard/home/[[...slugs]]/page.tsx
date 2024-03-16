@@ -1,16 +1,11 @@
 "use client"
 
-import FsItem from "@/app/_components/FileSystemItem"
-import { gql, useQuery } from "@apollo/client"
-import { Box, Button, Flex, Grid, Spinner } from "@chakra-ui/react"
-import { FC, Fragment, useContext, useState } from "react"
-import { APP_REPO_NAME, downloadRepoFile } from "../../../_utils/utils"
-import { RepoObjectQuery, RepoObjectQueryVariables } from "@/gql/graphql"
-import { useRouter } from "next/navigation"
+import { useQuery } from "@apollo/client"
+import { Button, Flex, Grid, Spinner } from "@chakra-ui/react"
 import Link from "next/link"
-import { RepositoryContext } from "../../RepositoryProvider"
-import UploadButton from "@/app/_components/UploadButton"
-import CreateFolderButton from "@/app/_components/CreateFolderButton"
+import { FC, Fragment } from "react"
+import { APP_REPO_NAME } from "../../../_utils/utils"
+import FolderView from "./FolderView"
 import { RepoObject } from "./graphql"
 
 interface Props {
@@ -28,22 +23,14 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
     })),
   ]
 
-  const { accessToken, owner } = useContext(RepositoryContext)
-  const router = useRouter()
-
-  const objectQuery = useQuery<RepoObjectQuery, RepoObjectQueryVariables>(
-    RepoObject,
-    {
-      variables: {
-        name: APP_REPO_NAME,
-        expression: `HEAD:${path}`,
-      },
-      fetchPolicy: "network-only",
-    }
-  )
+  const objectQuery = useQuery(RepoObject, {
+    variables: {
+      name: APP_REPO_NAME,
+      expression: `HEAD:${path}`,
+    },
+    fetchPolicy: "network-only",
+  })
   const object = objectQuery.data?.viewer.repository?.object
-
-  const [uploadingFiles, setUploadingFiles] = useState<string[]>([])
 
   return (
     <Grid gap="4">
@@ -60,65 +47,9 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
       {objectQuery.loading ? (
         <Spinner />
       ) : object?.__typename === "Tree" ? (
-        <>
-          <Flex flexWrap="wrap">
-            {object.entries
-              ?.filter((entry) => !entry.name.startsWith("."))
-              .map((entry) => {
-                return (
-                  <FsItem
-                    key={entry.name}
-                    onOpen={() => {
-                      if (entry.object?.__typename === "Tree") {
-                        router.push(`/dashboard/home/${entry.path}`)
-                      } else if (entry.object?.__typename === "Blob") {
-                        if (owner && entry.path)
-                          //TODO: handle null values
-                          downloadRepoFile(
-                            accessToken,
-                            owner,
-                            APP_REPO_NAME,
-                            entry.path
-                          )
-                      }
-                    }}
-                    treeEntry={entry}
-                  />
-                )
-              })}
-            {uploadingFiles.map((uploadingFile) => (
-              <Box key={uploadingFile} position="relative">
-                <FsItem treeEntry={{ name: uploadingFile }} opacity={0.6} />
-                <Flex
-                  position="absolute"
-                  inset="0 0 0 0"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Spinner size="sm" color="white" />
-                </Flex>
-              </Box>
-            ))}
-          </Flex>
-          <Flex position="fixed" right="0" bottom="0" gap="3" p="4">
-            <CreateFolderButton targetDir={path} />
-            <UploadButton
-              targetDir={path}
-              onUpload={async (filename, uploadPromise) => {
-                setUploadingFiles((uploadingFiles) => [
-                  ...uploadingFiles,
-                  filename,
-                ])
-                await uploadPromise
-                setUploadingFiles((uploadingFiles) =>
-                  uploadingFiles.filter((x) => x !== filename)
-                )
-              }}
-            />
-          </Flex>
-        </>
+        <FolderView folderPath={path} entries={object.entries} />
       ) : object?.__typename === "Blob" ? (
-        <Button onClick={() => {}}>Download</Button>
+        <Button onClick={() => {}}>Download</Button> //TODO: File preview component
       ) : (
         "Not found" //TODO: Not found page
       )}

@@ -1,11 +1,12 @@
 "use client"
 
-import { Box, Flex, Spinner } from "@chakra-ui/react"
+import { graphql } from "@/gql/gql"
+import { AppRepoQuery, AppRepoQueryVariables } from "@/gql/graphql"
+import { useQuery } from "@apollo/client"
+import { Flex, Spinner } from "@chakra-ui/react"
 import { FC, PropsWithChildren, createContext, useContext } from "react"
-import { gql, useQuery } from "@apollo/client"
 import { GithubContext } from "../GlobalProvier"
 import { APP_REPO_NAME, createAppRepo } from "../_utils/utils"
-import { AppRepoQuery, AppRepoQueryVariables } from "@/gql/graphql"
 
 type RepositoryContextType = {
   accessToken: string
@@ -55,7 +56,7 @@ const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
   )
 }
 
-const AppRepo = gql`
+const AppRepo = graphql(`
   query AppRepo($name: String!) {
     viewer {
       repository(name: $name) {
@@ -67,6 +68,6 @@ const AppRepo = gql`
       }
     }
   }
-`
+`)
 
 export default RepositoryProvider
