@@ -47,29 +47,16 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
 
   return (
     <Grid gap="4">
-      <Grid templateColumns="1fr auto auto" gap="4">
-        <Flex gap="1">
-          {navSlugs.map((slug, i, array) => (
-            <Fragment key={i}>
-              <Link key="i" href={`/dashboard/home/${slug.path}`}>
-                {slug.name}
-              </Link>
-              {i < array.length - 1 && "/"}
-            </Fragment>
-          ))}
-        </Flex>
-        <CreateFolderButton targetDir={path} />
-        <UploadButton
-          targetDir={path}
-          onUpload={async (filename, uploadPromise) => {
-            setUploadingFiles((uploadingFiles) => [...uploadingFiles, filename])
-            await uploadPromise
-            setUploadingFiles((uploadingFiles) =>
-              uploadingFiles.filter((x) => x !== filename)
-            )
-          }}
-        />
-      </Grid>
+      <Flex gap="1">
+        {navSlugs.map((slug, i, array) => (
+          <Fragment key={i}>
+            <Link key="i" href={`/dashboard/home/${slug.path}`}>
+              {slug.name}
+            </Link>
+            {i < array.length - 1 && "/"}
+          </Fragment>
+        ))}
+      </Flex>
       {objectQuery.loading ? (
         <Spinner />
       ) : object?.__typename === "Tree" ? (
@@ -112,6 +99,22 @@ const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
                 </Flex>
               </Box>
             ))}
+          </Flex>
+          <Flex position="fixed" right="0" bottom="0" gap="3" p="4">
+            <CreateFolderButton targetDir={path} />
+            <UploadButton
+              targetDir={path}
+              onUpload={async (filename, uploadPromise) => {
+                setUploadingFiles((uploadingFiles) => [
+                  ...uploadingFiles,
+                  filename,
+                ])
+                await uploadPromise
+                setUploadingFiles((uploadingFiles) =>
+                  uploadingFiles.filter((x) => x !== filename)
+                )
+              }}
+            />
           </Flex>
         </>
       ) : object?.__typename === "Blob" ? (

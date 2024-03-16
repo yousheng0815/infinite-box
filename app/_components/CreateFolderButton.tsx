@@ -5,6 +5,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -15,6 +16,8 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react"
+import { faFolderPlus } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { FC, useContext, useState } from "react"
 import {
   commit,
@@ -43,9 +46,15 @@ const CreateFolderButton: FC<Props> = ({ targetDir, onCreate }) => {
 
   return (
     <>
-      <Button colorScheme="blue" isLoading={isUploading} onClick={onOpen}>
-        New Folder
-      </Button>
+      <IconButton
+        boxSize="12"
+        colorScheme="blue"
+        aria-label="Upload file"
+        borderRadius="50%"
+        icon={<FontAwesomeIcon size="lg" icon={faFolderPlus} />}
+        isLoading={isUploading}
+        onClick={onOpen}
+      />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>

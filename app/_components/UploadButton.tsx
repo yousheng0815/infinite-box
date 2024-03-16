@@ -1,7 +1,7 @@
 "use client"
 
 import { useApolloClient } from "@apollo/client"
-import { Button, Input } from "@chakra-ui/react"
+import { Button, IconButton, Input } from "@chakra-ui/react"
 import { FC, useContext, useRef, useState } from "react"
 import {
   commit,
@@ -11,6 +11,8 @@ import {
 } from "../_utils/utils"
 import { RepositoryContext } from "../dashboard/RepositoryProvider"
 import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faFileCirclePlus } from "@fortawesome/free-solid-svg-icons"
 
 interface Props {
   targetDir: string
@@ -28,13 +30,16 @@ const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
 
   return (
     <>
-      <Button
+      <IconButton
+        boxSize="12"
         colorScheme="green"
-        onClick={() => inputRef.current?.click()}
+        aria-label="Upload file"
+        borderRadius="50%"
+        pl="1"
+        icon={<FontAwesomeIcon size="lg" icon={faFileCirclePlus} />}
         isLoading={isUploading}
-      >
-        Upload
-      </Button>
+        onClick={() => inputRef.current?.click()}
+      />
       <Input
         ref={inputRef}
         type="file"

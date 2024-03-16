@@ -13,30 +13,19 @@ const FsItem: FC<Props> = ({ treeEntry, onOpen, ...flexProps }) => {
   const { name, object } = treeEntry ?? {}
   const type = object?.__typename
 
-  const [isSelected, setIsSelected] = useState(false)
-  useEffect(() => {
-    const handleClick = () => setIsSelected(false)
-    window.addEventListener("click", handleClick, { capture: true })
-
-    return () =>
-      window.removeEventListener("click", handleClick, { capture: true })
-  }, [])
-
   const icon = type === "Tree" ? faFolder : faFile
 
   return (
     <Flex
+      as="button"
       boxSize="9rem"
       direction="column"
       alignItems="center"
       gap="1"
       pt="7"
       px="2"
-      border="1px"
-      borderColor={isSelected ? "gray.200" : "transparent"}
       _hover={{ backgroundColor: "gray.50" }}
-      onClick={() => setIsSelected(true)}
-      onDoubleClick={onOpen}
+      onClick={onOpen}
       {...flexProps}
     >
       <Box color="gray.700">
