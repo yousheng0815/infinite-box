@@ -62,7 +62,7 @@ const FolderView: FC<Props> = ({ folderPath, entries, ...boxProps }) => {
             />
             <Flex
               position="absolute"
-              inset="0 0 0 0"
+              inset="0"
               alignItems="center"
               justifyContent="center"
             >

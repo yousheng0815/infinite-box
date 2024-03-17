@@ -1,27 +1,19 @@
 "use client"
 
-import { ChakraProvider, Spinner } from "@chakra-ui/react"
-import {
-  FC,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-} from "react"
 import {
   ApolloClient,
-  InMemoryCache,
   ApolloProvider,
   HttpLink,
+  InMemoryCache,
 } from "@apollo/client"
-import { GithubContext } from "../GlobalProvier"
 import { useRouter } from "next/navigation"
+import { FC, PropsWithChildren, useContext, useEffect } from "react"
+import { GithubContext } from "../GlobalProvier"
 import RepositoryProvider from "./RepositoryProvider"
 
 export const LOCAL_STORAGE_KEY_GITHUB_TOKEN = "GITHUB_TOKEN"
 
-let token: string | undefined
+let token: string | undefined | null
 
 const httpLink = new HttpLink({
   uri: "https://api.github.com/graphql",
@@ -45,7 +37,7 @@ const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
   const { accessToken } = useContext(GithubContext)
   token = accessToken
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!accessToken) router.push("/")
   }, [accessToken, router])
 

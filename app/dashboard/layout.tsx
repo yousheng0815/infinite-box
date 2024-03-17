@@ -15,6 +15,7 @@ import { FC, PropsWithChildren, useEffect, useState } from "react"
 import DashboardProvier from "./DashboardProvier"
 import Sidebar from "./Sidebar"
 import Topbar from "./Topbar"
+import dynamic from "next/dynamic"
 
 const NAVBAR_WIDTH = "16rem"
 
@@ -92,4 +93,4 @@ const DashboardLayout: FC<PropsWithChildren> = ({ children }) => {
   )
 }
 
-export default DashboardLayout
+export default dynamic(() => Promise.resolve(DashboardLayout), { ssr: false })

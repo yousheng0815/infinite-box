@@ -1,11 +1,10 @@
 "use client"
 
 import { graphql } from "@/gql/gql"
-import { AppRepoQuery, AppRepoQueryVariables } from "@/gql/graphql"
 import { useQuery } from "@apollo/client"
-import { Flex, Spinner } from "@chakra-ui/react"
 import { FC, PropsWithChildren, createContext, useContext } from "react"
 import { GithubContext } from "../GlobalProvier"
+import Loading from "../_components/Loading"
 import { APP_REPO_NAME, createAppRepo } from "../_utils/utils"
 
 type RepositoryContextType = {
@@ -40,19 +39,13 @@ const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const owner = query.data?.viewer.repository?.owner.login
 
+  console.log("accessToken && owner", accessToken, owner)
   return accessToken && owner ? (
     <RepositoryContext.Provider value={{ accessToken, owner }}>
       {children}
     </RepositoryContext.Provider>
   ) : (
-    <Flex
-      width="full"
-      height="100dvh"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Spinner />
-    </Flex>
+    <Loading h="100dvh" />
   )
 }
 

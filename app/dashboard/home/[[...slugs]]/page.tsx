@@ -1,12 +1,13 @@
 "use client"
 
+import Loading from "@/app/_components/Loading"
 import { useQuery } from "@apollo/client"
-import { Button, Flex, Grid, Spinner } from "@chakra-ui/react"
+import { Button, Flex } from "@chakra-ui/react"
 import Link from "next/link"
 import { FC, Fragment } from "react"
 import { APP_REPO_NAME } from "../../../_utils/utils"
-import FolderView from "./FolderView"
 import { RepoObject } from "./graphql"
+import FolderView from "./FolderView"
 
 interface Props {
   params: { slugs?: string[] }
@@ -34,7 +35,7 @@ const Browse: FC<Props> = ({ params }) => {
   const object = objectQuery.data?.viewer.repository?.object
 
   return (
-    <Grid gap="4">
+    <Flex h="full" gap="4" flexDir="column">
       <Flex gap="1">
         {navSlugs.map((slug, i, array) => (
           <Fragment key={i}>
@@ -46,7 +47,7 @@ const Browse: FC<Props> = ({ params }) => {
         ))}
       </Flex>
       {objectQuery.loading ? (
-        <Spinner />
+        <Loading flex="1" />
       ) : object?.__typename === "Tree" ? (
         <FolderView folderPath={path} entries={object.entries} />
       ) : object?.__typename === "Blob" ? (
@@ -54,7 +55,7 @@ const Browse: FC<Props> = ({ params }) => {
       ) : (
         "Not found" //TODO: Not found page
       )}
-    </Grid>
+    </Flex>
   )
 }
 
