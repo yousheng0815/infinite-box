@@ -9,7 +9,7 @@ const LogoutButton = forwardRef<HTMLButtonElement, ButtonProps>(
     const { setAccessToken } = useContext(GithubContext)
 
     return (
-      <Button ref={ref} onClick={() => setAccessToken(null)} {...props}>
+      <Button ref={ref} onClick={() => setAccessToken(undefined)} {...props}>
         Log out
       </Button>
     )

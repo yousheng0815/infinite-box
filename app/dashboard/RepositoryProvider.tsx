@@ -39,7 +39,6 @@ const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const owner = query.data?.viewer.repository?.owner.login
 
-  console.log("accessToken && owner", accessToken, owner)
   return accessToken && owner ? (
     <RepositoryContext.Provider value={{ accessToken, owner }}>
       {children}

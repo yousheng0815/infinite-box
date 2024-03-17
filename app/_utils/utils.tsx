@@ -180,7 +180,7 @@ export const commit = async <T,>(
   })
 
   // GitHub returns unchanged results when we refetch immediately
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await new Promise((resolve) => setTimeout(resolve, 1500))
 
   client.refetchQueries({ include: [RepoObject] })
 

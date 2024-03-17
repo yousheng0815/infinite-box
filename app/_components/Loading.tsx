@@ -1,12 +1,21 @@
 "use client"
 
-import { Flex, FlexProps, Spinner } from "@chakra-ui/react"
+import { Flex, FlexProps, Spinner, SpinnerProps } from "@chakra-ui/react"
 import { FC } from "react"
 
-const Loading: FC<FlexProps> = (props) => {
+interface Props extends FlexProps {
+  size?: SpinnerProps["size"]
+}
+
+const Loading: FC<Props> = ({ size, ...flexProps }) => {
   return (
-    <Flex boxSize="full" alignItems="center" justifyContent="center" {...props}>
-      <Spinner />
+    <Flex
+      boxSize="full"
+      alignItems="center"
+      justifyContent="center"
+      {...flexProps}
+    >
+      <Spinner size={size} />
     </Flex>
   )
 }

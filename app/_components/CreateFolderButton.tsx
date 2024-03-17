@@ -26,7 +26,6 @@ import {
   getUnusedName,
 } from "../_utils/utils"
 import { RepositoryContext } from "../dashboard/RepositoryProvider"
-import { RepoObject } from "../dashboard/home/[[...slugs]]/graphql"
 
 interface Props {
   targetDir: string
@@ -47,12 +46,12 @@ const CreateFolderButton: FC<Props> = ({ targetDir, onCreate }) => {
   return (
     <>
       <IconButton
-        boxSize="12"
+        boxSize="14"
         colorScheme="blue"
         aria-label="Upload file"
         borderRadius="50%"
-        icon={<FontAwesomeIcon size="lg" icon={faFolderPlus} />}
-        isLoading={isUploading}
+        icon={<FontAwesomeIcon size="xl" icon={faFolderPlus} />}
+        isDisabled={isUploading}
         onClick={onOpen}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
