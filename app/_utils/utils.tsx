@@ -105,7 +105,7 @@ export const getPromiseWithHandlers = <T,>() => {
 }
 
 export const getTree = async <T,>(client: ApolloClient<T>, path: string) => {
-  const query = await client.query<RepoObjectQuery, RepoObjectQueryVariables>({
+  const query = await client.query({
     query: RepoObject,
     variables: {
       name: APP_REPO_NAME,
@@ -131,14 +131,7 @@ type FileChanges = {
 export const commit = async <T,>(
   client: ApolloClient<T>,
   owner: string,
-  fileChanges: FileChanges,
-  options?: Omit<
-    MutationOptions<
-      CreateCommitOnBranchMutation,
-      CreateCommitOnBranchMutationVariables
-    >,
-    "mutation"
-  >
+  fileChanges: FileChanges
 ) => {
   const additions = await Promise.all(
     fileChanges.additions?.map(async ({ file, path }) => ({
@@ -147,10 +140,7 @@ export const commit = async <T,>(
     })) ?? []
   )
 
-  const defaultBranchRefQuery = await client.query<
-    DefaultBranchRefQuery,
-    DefaultBranchRefQueryVariables
-  >({
+  const defaultBranchRefQuery = await client.query({
     query: DefaultBranchRef,
     variables: { name: APP_REPO_NAME },
     fetchPolicy: "network-only",
@@ -161,10 +151,7 @@ export const commit = async <T,>(
 
   if (!defaultBranchOid) throw new Error("Failed to fetch defaultBranchRef")
 
-  return client.mutate<
-    CreateCommitOnBranchMutation,
-    CreateCommitOnBranchMutationVariables
-  >({
+  const result = client.mutate({
     mutation: CreateCommitOnBranch,
 
     variables: {
@@ -190,8 +177,14 @@ export const commit = async <T,>(
         },
       },
     },
-    ...options,
   })
+
+  // GitHub returns unchanged results when we refetch immediately
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  client.refetchQueries({ include: [RepoObject] })
+
+  return result
 }
 
 const DefaultBranchRef = graphql(`

@@ -58,21 +58,14 @@ const UploadButton: FC<Props> = ({ targetDir, onUpload }) => {
 
           onUpload?.(newFilename, promise)
 
-          await commit(
-            client,
-            owner,
-            {
-              additions: [
-                {
-                  path: `${targetDir}${newFilename}`,
-                  file,
-                },
-              ],
-            },
-            {
-              refetchQueries: [RepoObject],
-            }
-          )
+          await commit(client, owner, {
+            additions: [
+              {
+                path: `${targetDir}${newFilename}`,
+                file,
+              },
+            ],
+          })
 
           resolve?.()
 

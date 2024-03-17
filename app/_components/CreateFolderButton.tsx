@@ -77,21 +77,14 @@ const CreateFolderButton: FC<Props> = ({ targetDir, onCreate }) => {
 
               const emptyFile = new File([new Blob([])], "")
 
-              await commit(
-                client,
-                owner,
-                {
-                  additions: [
-                    {
-                      path: `${targetDir}${newFolderName}/._`,
-                      file: emptyFile,
-                    },
-                  ],
-                },
-                {
-                  refetchQueries: [RepoObject],
-                }
-              )
+              await commit(client, owner, {
+                additions: [
+                  {
+                    path: `${targetDir}${newFolderName}/._`,
+                    file: emptyFile,
+                  },
+                ],
+              })
 
               resolve?.()
 
