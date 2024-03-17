@@ -29,6 +29,7 @@ const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
       if (shouldCreateAppRepo && accessToken) {
         try {
           await createAppRepo(accessToken)
+          await new Promise((resolve) => setTimeout(resolve, 1500))
           query.refetch()
         } catch (e) {
           console.error(e) //TODO: Display the error message
