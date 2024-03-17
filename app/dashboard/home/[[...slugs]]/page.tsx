@@ -12,8 +12,9 @@ interface Props {
   params: { slugs?: string[] }
 }
 
-const Browse: FC<Props> = ({ params: { slugs = [] } }) => {
-  const path = slugs.map((slug) => `${slug}/`).join("")
+const Browse: FC<Props> = ({ params }) => {
+  const slugs = params.slugs?.map((slug) => decodeURIComponent(slug)) ?? []
+  const path = decodeURIComponent(slugs.map((slug) => `${slug}/`).join(""))
 
   const navSlugs = [
     { name: "Home", path: "" },

@@ -21,7 +21,7 @@ export const RepositoryContext = createContext<RepositoryContextType>({
 const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
   const { accessToken } = useContext(GithubContext)
 
-  const query = useQuery<AppRepoQuery, AppRepoQueryVariables>(AppRepo, {
+  const query = useQuery(AppRepo, {
     variables: { name: APP_REPO_NAME },
     onError: async (error) => {
       const shouldCreateAppRepo = error.graphQLErrors.some(

@@ -21,7 +21,7 @@ const FolderView: FC<Props> = ({ folderPath, entries, ...boxProps }) => {
   >([])
 
   return (
-    <>
+    <Box {...boxProps}>
       <Flex flexWrap="wrap">
         {entries
           ?.filter((entry) => !entry.name.startsWith("."))
@@ -99,7 +99,7 @@ const FolderView: FC<Props> = ({ folderPath, entries, ...boxProps }) => {
           }}
         />
       </Flex>
-    </>
+    </Box>
   )
 }
 
