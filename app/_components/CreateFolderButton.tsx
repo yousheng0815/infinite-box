@@ -7,7 +7,6 @@ import {
   FormLabel,
   IconButton,
   Input,
-  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
@@ -26,6 +25,7 @@ import {
   getUnusedName,
 } from "../_utils/utils"
 import { RepositoryContext } from "../dashboard/RepositoryProvider"
+import Modal from "./Modal"
 
 interface Props {
   targetDir: string
@@ -55,63 +55,59 @@ const CreateFolderButton: FC<Props> = ({ targetDir, onCreate }) => {
         onClick={onOpen}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <form //TODO: Consider using a form library
-            onSubmit={async (e) => {
-              e.preventDefault()
+        <form //TODO: Consider using a form library
+          onSubmit={async (e) => {
+            e.preventDefault()
 
-              onClose()
-              setFolderName("")
+            onClose()
+            setFolderName("")
 
-              setIsUploading(true)
+            setIsUploading(true)
 
-              const targetTree = await getTree(client, targetDir)
-              const existingNames = targetTree.map((entry) => entry.name)
-              const newFolderName = getUnusedName(folderName, existingNames)
+            const targetTree = await getTree(client, targetDir)
+            const existingNames = targetTree.map((entry) => entry.name)
+            const newFolderName = getUnusedName(folderName, existingNames)
 
-              const { promise, resolve } = getPromiseWithHandlers<void>()
+            const { promise, resolve } = getPromiseWithHandlers<void>()
 
-              onCreate?.(newFolderName, promise)
+            onCreate?.(newFolderName, promise)
 
-              const emptyFile = new File([new Blob([])], "")
+            const emptyFile = new File([new Blob([])], "")
 
-              await commit(client, owner, {
-                additions: [
-                  {
-                    path: `${targetDir}${newFolderName}/._`,
-                    file: emptyFile,
-                  },
-                ],
-              })
+            await commit(client, owner, {
+              additions: [
+                {
+                  path: `${targetDir}${newFolderName}/._`,
+                  file: emptyFile,
+                },
+              ],
+            })
 
-              resolve?.()
+            resolve?.()
 
-              setIsUploading(false)
-            }}
-          >
-            <ModalHeader>Create Folder</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl isRequired>
-                <FormLabel>Folder name</FormLabel>
-                <Input
-                  value={folderName}
-                  onChange={(e) => setFolderName(e.target.value)}
-                  required
-                />
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} type="submit">
-                Create
-              </Button>
-              <Button variant="ghost" onClick={onClose}>
-                Cancel
-              </Button>
-            </ModalFooter>
-          </form>
-        </ModalContent>
+            setIsUploading(false)
+          }}
+        >
+          <ModalHeader>Create Folder</ModalHeader>
+          <ModalBody>
+            <FormControl isRequired>
+              <FormLabel>Folder name</FormLabel>
+              <Input
+                value={folderName}
+                onChange={(e) => setFolderName(e.target.value)}
+                required
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} type="submit">
+              Create
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </form>
       </Modal>
     </>
   )
