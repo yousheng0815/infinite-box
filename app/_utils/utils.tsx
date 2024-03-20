@@ -34,12 +34,19 @@ export const createAppRepo = async (accessToken: string) => {
   }
 }
 
-export const downloadRepoFile = async (
+type FileContent = {
+  type: string
+  size: string
+  name: string
+  download_url: string
+}
+
+export const getFileInfo = async (
   accessToken: string,
   owner: string,
   repo: string,
   path: string
-) => {
+): Promise<FileContent> => {
   const response = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
     {
@@ -57,7 +64,18 @@ export const downloadRepoFile = async (
     throw new Error(responseJson.message)
   }
 
-  download(responseJson.download_url, responseJson.name)
+  return responseJson
+}
+
+export const downloadRepoFile = async (
+  accessToken: string,
+  owner: string,
+  repo: string,
+  path: string
+) => {
+  const fileContent = await getFileInfo(accessToken, owner, repo, path)
+
+  download(fileContent.download_url, fileContent.name)
 }
 
 export const download = async (url: string, name: string) => {
