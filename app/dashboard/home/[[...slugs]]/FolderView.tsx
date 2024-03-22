@@ -1,25 +1,14 @@
 import CreateFolderButton from "@/app/_components/CreateFolderButton"
 import FsItem from "@/app/_components/FileSystemItem"
-import Modal from "@/app/_components/Modal"
 import UploadButton from "@/app/_components/UploadButton"
 import { APP_REPO_NAME, commit, getFileInfo } from "@/app/_utils/utils"
 import { FsItemTreeEntryFragment } from "@/gql/graphql"
 import { useApolloClient } from "@apollo/client"
-import {
-  Box,
-  BoxProps,
-  Button,
-  Flex,
-  Image,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { Box, BoxProps, Flex, useDisclosure } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
 import { FC, useContext, useState } from "react"
 import { RepositoryContext } from "../../RepositoryProvider"
-import Loading from "@/app/_components/Loading"
+import PreivewModal from "./PreivewModal"
 
 interface Props extends BoxProps {
   folderPath: string
@@ -151,74 +140,14 @@ const FolderView: FC<Props> = ({ folderPath, entries, ...boxProps }) => {
           />
         </Flex>
       </Box>
-
-      <Modal
-        size="xl"
+      <PreivewModal
+        previewFile={previewFile}
         isOpen={isPreviewModalOpen}
         onClose={() => {
           onPreviewModalClose()
           setPreviewFile(undefined)
         }}
-        scrollBehavior="inside"
-        isCentered
-      >
-        <ModalHeader>{previewFile?.name}</ModalHeader>
-        <ModalBody>
-          {previewFile?.blob ? (
-            previewFile.blob.type.startsWith("image/") ? (
-              <Box
-                as="img"
-                objectFit="contain"
-                m="auto"
-                boxSize="fit-content"
-                maxH="60dvh"
-                maxW="full"
-                src={URL.createObjectURL(previewFile.blob)}
-              />
-            ) : previewFile.blob.type.startsWith("video/") ? (
-              <Box
-                as="video"
-                controls
-                m="auto"
-                boxSize="fit-content"
-                maxH="60dvh"
-                maxW="full"
-              >
-                <source src={URL.createObjectURL(previewFile.blob)} />
-              </Box>
-            ) : previewFile.blob.type.startsWith("text/") ? (
-              <iframe
-                width="100%"
-                height="100%"
-                src={URL.createObjectURL(previewFile.blob)}
-              />
-            ) : (
-              "Can't preview file"
-            )
-          ) : (
-            <Loading />
-          )}
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            disabled={!previewFile?.blob}
-            onClick={() => {
-              if (!previewFile?.blob) return
-
-              const anchor = document.createElement("a")
-              anchor.href = URL.createObjectURL(previewFile.blob)
-              anchor.download = previewFile.name
-
-              document.body.appendChild(anchor)
-              anchor.click()
-              document.body.removeChild(anchor)
-            }}
-          >
-            Download
-          </Button>
-        </ModalFooter>
-      </Modal>
+      />
     </>
   )
 }
