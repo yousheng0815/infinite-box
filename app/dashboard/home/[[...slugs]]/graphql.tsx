@@ -1,5 +1,4 @@
 import { graphql } from "@/gql/gql"
-import { gql } from "@apollo/client"
 
 export const FsItemTreeEntry = graphql(`
   fragment FsItemTreeEntry on TreeEntry {
@@ -7,6 +6,7 @@ export const FsItemTreeEntry = graphql(`
     oid
     path
     size
+    extension
     object {
       id
       oid
