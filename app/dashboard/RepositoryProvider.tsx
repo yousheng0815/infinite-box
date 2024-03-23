@@ -18,15 +18,26 @@ export const RepositoryContext = createContext<RepositoryContextType>({
 })
 
 const RepositoryProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { accessToken } = useContext(GithubContext)
+  const { accessToken, setAccessToken } = useContext(GithubContext)
 
   const query = useQuery(AppRepo, {
     variables: { name: APP_REPO_NAME },
     onError: async (error) => {
+      if (
+        error.message === "Response not successful: Received status code 401"
+      ) {
+        setAccessToken(undefined)
+      }
+
       const shouldCreateAppRepo = error.graphQLErrors.some(
         (error) => "type" in error && error.type === "NOT_FOUND"
       )
-      if (shouldCreateAppRepo && accessToken) {
+      if (
+        error.graphQLErrors.some(
+          (error) => "type" in error && error.type === "NOT_FOUND"
+        ) &&
+        accessToken
+      ) {
         try {
           await createAppRepo(accessToken)
           await new Promise((resolve) => setTimeout(resolve, 1500))
