@@ -8,6 +8,7 @@ import { FC, Fragment } from "react"
 import { APP_REPO_NAME } from "../../../_utils/utils"
 import { RepoObject } from "./graphql"
 import FolderView from "./FolderView"
+import { Link as ChakraLink } from "@chakra-ui/react"
 
 interface Props {
   params: { slugs?: string[] }
@@ -39,9 +40,9 @@ const Browse: FC<Props> = ({ params }) => {
       <Flex gap="1">
         {navSlugs.map((slug, i, array) => (
           <Fragment key={i}>
-            <Link key="i" href={`/dashboard/home/${slug.path}`}>
+            <ChakraLink key="i" as={Link} href={`/dashboard/home/${slug.path}`}>
               {slug.name}
-            </Link>
+            </ChakraLink>
             {i < array.length - 1 && "/"}
           </Fragment>
         ))}
