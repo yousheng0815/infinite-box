@@ -10,6 +10,7 @@ import { FC, useContext, useState } from "react"
 import { RepositoryContext } from "../../RepositoryProvider"
 import PreivewModal, { PreviewFile } from "./PreivewModal"
 import InfoModal from "./InfoModal"
+import { dashboardContext } from "../../DashboardProvier"
 
 interface Props extends FlexProps {
   folderPath: string
@@ -18,6 +19,7 @@ interface Props extends FlexProps {
 
 const FolderView: FC<Props> = ({ folderPath, entries, ...flexProps }) => {
   const client = useApolloClient()
+  const { search } = useContext(dashboardContext)
 
   const { accessToken, owner } = useContext(RepositoryContext)
   const router = useRouter()
@@ -36,7 +38,11 @@ const FolderView: FC<Props> = ({ folderPath, entries, ...flexProps }) => {
     <>
       <Flex flexWrap="wrap" {...flexProps}>
         {entries
-          ?.filter((entry) => !entry.name.startsWith("."))
+          ?.filter(
+            (entry) =>
+              !entry.name.startsWith(".") &&
+              entry.name.toLocaleLowerCase().indexOf(search.toLowerCase()) >= 0
+          )
           .map((entry) => {
             return (
               <FsItem

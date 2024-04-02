@@ -7,7 +7,16 @@ import {
   InMemoryCache,
 } from "@apollo/client"
 import { useRouter } from "next/navigation"
-import { FC, PropsWithChildren, useContext, useEffect } from "react"
+import {
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import { GithubContext } from "../GlobalProvier"
 import RepositoryProvider from "./RepositoryProvider"
 
@@ -31,6 +40,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+type DashboardContext = {
+  search: string
+  setSearch: Dispatch<SetStateAction<string>>
+}
+export const dashboardContext = createContext<DashboardContext>({
+  search: "",
+  setSearch: () => {},
+})
+
 const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
   const router = useRouter()
 
@@ -41,9 +59,15 @@ const DashboardProvier: FC<PropsWithChildren> = ({ children }) => {
     if (!accessToken) router.push("/")
   }, [accessToken, router])
 
+  const [search, setSearch] = useState("")
+
   return (
     <ApolloProvider client={client}>
-      <RepositoryProvider>{children}</RepositoryProvider>
+      <RepositoryProvider>
+        <dashboardContext.Provider value={{ search, setSearch }}>
+          {children}
+        </dashboardContext.Provider>
+      </RepositoryProvider>
     </ApolloProvider>
   )
 }
